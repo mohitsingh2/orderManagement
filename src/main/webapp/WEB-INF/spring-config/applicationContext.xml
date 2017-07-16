@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+            http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+            http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+            http://www.springframework.org/schema/jdbc
+            http://www.springframework.org/schema/jdbc/spring-jdbc-4.1.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context-4.1.xsd
+            http://www.springframework.org/schema/data/jpa 
+            http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">    		
+  
+    <import resource="classpath:META-INF/providerCxfLayerContext.xml" />
+	
+
+   <context:property-placeholder location="classpath:/sopra.properties" /> 
+    <!-- scans the classpath for annotated components (including @Repostory 
+    and @Service  that will be auto-registered as Spring beans  -->          
+	<context:component-scan base-package="com.sopra" />
+	
+	<bean id="parentDataSource" class="com.zaxxer.hikari.HikariDataSource">
+	   <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+	   <property name="maximumPoolSize" value="${cis.db.maxPoolSize}"/>
+<!-- 	   <property name="connectionTimeout" value="${cis.db.connectionTimeout}"/> -->
+	   <property name="idleTimeout" value="${cis.db.idleTimeout}"/>
+	   <property name="connectionTestQuery" value="select 1 from DUAL"/>
+	</bean>
+			
+	<bean id="sopradevDataSource" parent="parentDataSource">
+	   <property name="jdbcUrl" value="jdbc:mysql://${cis.db.sopradev.host}:${cis.db.sopradev.port}/${cis.db.sopradev.sid}"/>
+	   <property name="username" value="${cis.db.sopradev.user}"/>
+	   <property name="password" value="${cis.db.sopradev.password}"/>
+	</bean>
+
+	<bean id="dataSource" class="com.sopra.steria.jpinternational.dao.config.DatabaseRoutingDataSource">
+	   <property name="targetDataSources">
+	      <map key-type="com.sopra.steria.jpinternational.dao.config.DatabaseType">
+	         <entry key="SOPRADEV" value-ref="sopradevDataSource"/>
+	      </map>
+	   </property>
+	   <property name="defaultTargetDataSource" ref="sopradevDataSource"/>
+	</bean>
+
+   <bean id="persistenceExceptionTranslationPostProcessor"
+    class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+    
+   <!-- scans the classpath for annotated components (including @Repostory 
+    and @Service  that will be auto-registered as Spring beans  -->          
+    <context:component-scan base-package="com.sopra.steria.jpinternational.business.service" />
+<bean id="orderService" class="com.sopra.steria.jpinternational.business.service.impl.OrderServiceImpl"/>	
+ </beans>
+ 

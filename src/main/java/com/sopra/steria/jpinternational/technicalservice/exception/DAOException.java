@@ -1,0 +1,37 @@
+package com.sopra.steria.jpinternational.technicalservice.exception;
+
+public class DAOException extends TechnicalException {
+
+	private static final long serialVersionUID = -4390419002295148544L;
+
+	public DAOException() {
+		super();
+	}
+
+	public DAOException(String message) {
+		super(message);
+	}
+
+	public DAOException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public DAOException(Throwable cause) {
+		super(cause);
+	}
+
+	public DAOException(String clazz, String method, String message) {
+		super(clazz, method, message);
+	}
+
+	public DAOException(String clazz, String method, String message,
+			Throwable cause) {
+		super(clazz, method, message, cause);
+	}
+
+	public DAOException(String message, String errorCode) {
+		super(message);
+
+	}
+
+}

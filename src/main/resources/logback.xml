@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- log back configuration. For Tom cat, this file should be put in CATALINA_BASE/lib directory, but you must remove it from war -->
+<configuration debug="false" scan="true" scanPeriod="30 seconds">
+	<property resource="cis.properties" />
+	
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<Target>System.out</Target>
+		<encoder>
+			<pattern>%date{ISO8601} %-5level [%thread] %logger{30}\(%line\) - %message%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${cis.log.dir}/cis.log</file>
+		
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+     		<!-- daily rollover -->
+     		<fileNamePattern>${cis.log.dir}/cis.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+     		<maxHistory>7</maxHistory>
+   		</rollingPolicy>
+   		
+		<encoder>
+			<pattern>%date{ISO8601} %-5level [%thread] %logger{30}\(%line\) - %message%n</pattern>
+		</encoder>
+	</appender>
+	
+  <!-- ============================================== -->
+  <!-- cis logger settings                          -->
+  <!-- ============================================== -->
+  <logger name="com.orange" additivity="false" >
+    <level value="DEBUG"/>
+    <appender-ref ref="stdout" />
+    <appender-ref ref="file" /> 
+  </logger>
+
+  <!-- ============================================== -->
+  <!-- HIBERNATE SQL logger settings                  -->
+  <!-- ============================================== -->
+  <logger name="org.hibernate.SQL" additivity="false" >
+    <level value="INFO"/>
+    <appender-ref ref="stdout" />
+    <appender-ref ref="file" /> 
+  </logger>
+  
+  <!-- ============================================== -->
+  <!-- HIBERNATE SQL logger settings                  -->
+  <!-- ============================================== -->
+  <logger name="org.hibernate.type" additivity="false" >
+    <level value="INFO"/>
+    <appender-ref ref="stdout" />
+    <appender-ref ref="file" /> 
+  </logger>
+
+  <!-- ============================================== -->
+  <!-- Spring logger settings                         -->
+  <!-- ============================================== -->
+  <logger name="org.springframework" additivity="false" >
+    <level value="INFO"/>
+    <appender-ref ref="stdout" />
+    <appender-ref ref="file" /> 
+  </logger>
+
+  <!-- ============================================== -->
+  <!-- cxf logger settings (Capture request/response) -->
+  <!-- ============================================== -->
+  <logger name="org.apache.cxf" additivity="false" >
+    <level value="INFO"/>
+    <appender-ref ref="stdout" />
+    <appender-ref ref="file" /> 
+  </logger>
+
+  <!-- ============================================== -->
+  <!-- ROOT logger settings                           -->
+  <!-- ============================================== -->
+	<root level="INFO">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="file" />
+		<priority value ="INFO" />
+	</root>
+</configuration>
